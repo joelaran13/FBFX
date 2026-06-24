@@ -6,114 +6,147 @@
     <title>Trading Report FBFX 2026 Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQmJbSlZ18XBBX12i4S_z11mI012S0ZB2r2r+x4L8z9f0+g/12/34/56/78/90==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-q//Oy3i4pSqND2Qhq7uA50ycb4qCEqBItwH0RPEmRkIWeqX0H_A_C6o20b1O61bT5R/5W/E/GjE2Xj2X0/y1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body class="min-h-screen bg-slate-900 text-slate-200 font-sans p-4 md:p-8">
     
-    <div class="max-w-6xl mx-auto mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            FBFX Trading Dashboard
-        </h1>
-        <p class="text-slate-400 italic text-sm md:text-base border-l-4 border-blue-500 pl-4 py-1 bg-slate-800/50 rounded-r">
-            "The market doesn't reward hesitation — it rewards conviction. While everyone else is overthinking, you're executing."
-        </p>
-    </div>
-
-    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-xl mb-6 gap-4">
+    <div id="capture-area" class="pb-8">
         
-        <div class="flex gap-2 w-full lg:w-auto">
-            <button id="btn-mr-m" class="flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30">
-                MR. M
-            </button>
-            <button id="btn-mr-j" class="flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-slate-700 text-slate-300 hover:bg-slate-600">
-                MR. J
-            </button>
+        <div id="pdf-header" class="max-w-6xl mx-auto mb-8 hidden border-b-2 border-slate-700 pb-6 pt-4">
+            <div class="flex justify-between items-end">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-600 p-3 rounded-lg shadow-lg shadow-blue-500/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-black text-white tracking-wider">FBFX <span class="text-blue-500 font-light">CAPITAL</span></h1>
+                        <p class="text-slate-400 text-sm tracking-widest uppercase font-semibold mt-1">Official Trading Statement</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h2 class="text-xl font-bold text-white"><span id="pdf-trader-name"></span> Portfolio</h2>
+                    <p class="text-slate-400 text-sm mt-1" id="pdf-date-range"></p>
+                </div>
+            </div>
         </div>
 
-        <div class="flex items-center justify-between w-full lg:w-auto gap-4 flex-wrap">
+        <div id="web-header" class="max-w-6xl mx-auto mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                FBFX Trading Dashboard
+            </h1>
+            <p class="text-slate-400 italic text-sm md:text-base border-l-4 border-blue-500 pl-4 py-1 bg-slate-800/50 rounded-r">
+                "The market doesn't reward hesitation — it rewards conviction. While everyone else is overthinking, you're executing."
+            </p>
+        </div>
+
+        <div data-html2canvas-ignore="true" class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-xl mb-6 gap-4">
             
-            <div class="flex gap-2">
-                <div class="flex items-center gap-2 bg-slate-900 rounded-lg border border-slate-700 px-3 py-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <select id="month-filter" class="bg-transparent text-sm text-slate-200 focus:outline-none cursor-pointer">
-                        <option value="All">All Months</option>
-                    </select>
-                </div>
-
-                <div class="flex items-center gap-2 bg-slate-900 rounded-lg border border-slate-700 px-3 py-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <select id="day-filter" class="bg-transparent text-sm text-slate-200 focus:outline-none cursor-pointer">
-                        <option value="All">All Days</option>
-                    </select>
-                </div>
+            <div class="flex gap-2 w-full lg:w-auto">
+                <button id="btn-mr-m" class="flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30">
+                    MR. M
+                </button>
+                <button id="btn-mr-j" class="flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-slate-700 text-slate-300 hover:bg-slate-600">
+                    MR. J
+                </button>
             </div>
 
-            <button id="btn-refresh" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 h-fit ml-2" onclick="loadData()">
-                <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                <span id="refresh-text" class="hidden sm:inline">Refresh Data</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="max-w-6xl mx-auto space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                    Win Rate
+            <div class="flex items-center justify-between w-full lg:w-auto gap-4 flex-wrap">
+                
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 bg-slate-900 rounded-lg border border-slate-700 px-3 py-1.5" title="Start Date">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <input type="date" id="start-date" class="bg-transparent text-sm text-slate-200 focus:outline-none cursor-pointer" style="color-scheme: dark;">
+                    </div>
+                    
+                    <span class="text-slate-500 text-sm font-medium">to</span>
+                    
+                    <div class="flex items-center gap-2 bg-slate-900 rounded-lg border border-slate-700 px-3 py-1.5" title="End Date">
+                        <input type="date" id="end-date" class="bg-transparent text-sm text-slate-200 focus:outline-none cursor-pointer" style="color-scheme: dark;">
+                    </div>
+                    
+                    <button id="btn-clear-dates" class="hidden ml-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-2 py-1.5 rounded transition-colors" title="Clear Dates">
+                        Clear
+                    </button>
                 </div>
-                <div id="stat-winrate" class="text-2xl font-bold text-white">0%</div>
-                <div id="stat-winloss" class="text-xs text-slate-500 mt-1">0 W / 0 L</div>
-            </div>
 
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                    Total PnL
-                </div>
-                <div id="stat-pnl" class="text-2xl font-bold">$0</div>
-                <div class="text-xs text-slate-500 mt-1">Net Profit/Loss</div>
-            </div>
+                <div class="flex gap-2">
+                    <button id="btn-export" class="bg-red-600 hover:bg-red-500 text-white font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 h-fit" onclick="exportToPDF()">
+                        <svg id="export-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <span id="export-text" class="hidden sm:inline">Export PDF</span>
+                    </button>
 
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-                    Total Trades
+                    <button id="btn-refresh" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 h-fit" onclick="loadData()">
+                        <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        <span id="refresh-text" class="hidden sm:inline">Refresh</span>
+                    </button>
                 </div>
-                <div id="stat-total" class="text-2xl font-bold text-white">0</div>
-                <div class="text-xs text-slate-500 mt-1">Executions logged</div>
             </div>
         </div>
 
-        <div class="bg-slate-800 p-4 md:p-6 rounded-xl border border-slate-700 shadow-xl">
-            <h2 class="font-semibold text-white mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Cumulative PnL Curve
-            </h2>
-            <div class="w-full h-64 md:h-80 relative">
-                <canvas id="pnlChart"></canvas>
-            </div>
-        </div>
+        <div class="max-w-6xl mx-auto space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        Win Rate
+                    </div>
+                    <div id="stat-winrate" class="text-2xl font-bold text-white">0%</div>
+                    <div id="stat-winloss" class="text-xs text-slate-500 mt-1">0 W / 0 L</div>
+                </div>
 
-        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-xl">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/80">
-                <h2 class="font-semibold text-white">Trade Ledger <span id="status-message" class="ml-2 text-xs text-emerald-400 hidden">Synced</span></h2>
-                <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600">Read Only</span>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        Total PnL
+                    </div>
+                    <div id="stat-pnl" class="text-2xl font-bold">$0</div>
+                    <div class="text-xs text-slate-500 mt-1">Net Profit/Loss</div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                        Total Trades
+                    </div>
+                    <div id="stat-total" class="text-2xl font-bold text-white">0</div>
+                    <div class="text-xs text-slate-500 mt-1">Executions logged</div>
+                </div>
             </div>
-            <div class="overflow-x-auto h-[400px] overflow-y-auto">
-                <table class="w-full text-left text-sm relative">
-                    <thead class="bg-slate-900/90 text-slate-400 sticky top-0 backdrop-blur-sm z-10 shadow-sm">
-                        <tr>
-                            <th class="p-3 font-medium">Date</th>
-                            <th class="p-3 font-medium">Position</th>
-                            <th class="p-3 font-medium">Lot Size</th>
-                            <th class="p-3 font-medium">Outcome</th>
-                            <th class="p-3 font-medium text-right">Result ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="trade-table-body" class="divide-y divide-slate-700/50">
-                        </tbody>
-                </table>
+
+            <div class="bg-slate-800 p-4 md:p-6 rounded-xl border border-slate-700 shadow-xl">
+                <h2 class="font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Cumulative PnL Curve
+                </h2>
+                <div class="w-full h-64 md:h-80 relative">
+                    <canvas id="pnlChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-xl">
+                <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/80">
+                    <h2 class="font-semibold text-white">Trade Ledger <span id="status-message" class="ml-2 text-xs text-emerald-400 hidden">Synced</span></h2>
+                    <span data-html2canvas-ignore="true" class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600">Read Only</span>
+                </div>
+                <div id="table-container" class="overflow-x-auto h-[400px] overflow-y-auto">
+                    <table class="w-full text-left text-sm relative">
+                        <thead class="bg-slate-900/90 text-slate-400 sticky top-0 backdrop-blur-sm z-10 shadow-sm">
+                            <tr>
+                                <th class="p-3 font-medium">Date</th>
+                                <th class="p-3 font-medium">Position</th>
+                                <th class="p-3 font-medium">Lot Size</th>
+                                <th class="p-3 font-medium">Outcome</th>
+                                <th class="p-3 font-medium text-right">Result ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trade-table-body" class="divide-y divide-slate-700/50">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -124,19 +157,18 @@
         // =========================================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYkc9vRgLbe-cohQMXCu1reEF8t3iCRYYi67EtK-whW1Hwu5ZL7HOvlME880qK34Rh/exec'; 
 
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
         let trades = [];
         let selectedTrader = 'MR. M';
-        let selectedMonth = 'All';
-        let selectedDay = 'All';
         let pnlChartInstance = null; 
 
         // DOM Elements
         const btnMrM = document.getElementById('btn-mr-m');
         const btnMrJ = document.getElementById('btn-mr-j');
-        const monthFilter = document.getElementById('month-filter');
-        const dayFilter = document.getElementById('day-filter');
+        
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const btnClearDates = document.getElementById('btn-clear-dates');
+        
         const statWinRate = document.getElementById('stat-winrate');
         const statWinLoss = document.getElementById('stat-winloss');
         const statPnl = document.getElementById('stat-pnl');
@@ -149,71 +181,39 @@
         const iconBuy = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
         const iconSell = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>`;
 
-        // Data Extractors
-        function getMonthNumFromDate(dateStr) {
-            if(!dateStr) return null;
-            const parts = dateStr.toString().split('/');
-            if(parts.length >= 2) return parseInt(parts[1], 10);
-            return null;
+        // Helper: Convert Google Sheet DD/MM date to a real Javascript Timestamp
+        // Assumes current year (2026) if year is not provided in sheet
+        function parseTradeDateToTimestamp(dateStr) {
+            if(!dateStr) return 0;
+            const parts = String(dateStr).split('/');
+            if(parts.length >= 2) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1; // JS Months are 0-indexed
+                const year = parts.length === 3 ? parseInt(parts[2], 10) : 2026;
+                // Return timestamp set to midnight
+                return new Date(year, month, day).setHours(0, 0, 0, 0);
+            }
+            return 0;
         }
 
-        function getDayNumFromDate(dateStr) {
-            if(!dateStr) return null;
-            const parts = dateStr.toString().split('/');
-            if(parts.length >= 1) return parseInt(parts[0], 10);
-            return null;
+        // Handle Date Picker Changes
+        function handleDateChange() {
+            if (startDateInput.value || endDateInput.value) {
+                btnClearDates.classList.remove('hidden');
+            } else {
+                btnClearDates.classList.add('hidden');
+            }
+            renderUI();
         }
 
-        // Dropdown Builders
-        function populateMonthDropdown() {
-            const uniqueMonthNums = new Set();
-            trades.forEach(t => {
-                if (String(t.trader || '').toUpperCase() === selectedTrader.toUpperCase()) {
-                    const m = getMonthNumFromDate(t.date);
-                    if(m) uniqueMonthNums.add(m);
-                }
-            });
-
-            const sortedMonths = Array.from(uniqueMonthNums).sort((a, b) => a - b);
-            
-            monthFilter.innerHTML = '<option value="All" class="bg-slate-800">All Months</option>';
-            sortedMonths.forEach(num => {
-                const opt = document.createElement('option');
-                opt.value = num;
-                opt.className = "bg-slate-800";
-                opt.textContent = monthNames[num - 1]; 
-                monthFilter.appendChild(opt);
-            });
-            
-            monthFilter.value = selectedMonth;
-        }
-
-        function populateDayDropdown() {
-            const uniqueDays = new Set();
-            trades.forEach(t => {
-                const matchTrader = String(t.trader || '').toUpperCase() === selectedTrader.toUpperCase();
-                const tradeMonth = getMonthNumFromDate(t.date);
-                const matchMonth = selectedMonth === 'All' || tradeMonth === parseInt(selectedMonth, 10);
-                
-                if (matchTrader && matchMonth) {
-                    const d = getDayNumFromDate(t.date);
-                    if(d) uniqueDays.add(d);
-                }
-            });
-
-            const sortedDays = Array.from(uniqueDays).sort((a, b) => a - b);
-            
-            dayFilter.innerHTML = '<option value="All" class="bg-slate-800">All Days</option>';
-            sortedDays.forEach(num => {
-                const opt = document.createElement('option');
-                opt.value = num;
-                opt.className = "bg-slate-800";
-                opt.textContent = num; 
-                dayFilter.appendChild(opt);
-            });
-            
-            dayFilter.value = selectedDay;
-        }
+        startDateInput.addEventListener('change', handleDateChange);
+        endDateInput.addEventListener('change', handleDateChange);
+        
+        btnClearDates.addEventListener('click', () => {
+            startDateInput.value = '';
+            endDateInput.value = '';
+            handleDateChange();
+        });
 
         // Fetch Data from Google Sheets
         function loadData() {
@@ -226,8 +226,6 @@
                 .then(data => {
                     if(data.status === 'success') {
                         trades = data.data || [];
-                        populateMonthDropdown();
-                        populateDayDropdown();
                         renderUI();
                         
                         statusMessage.classList.remove('hidden');
@@ -247,7 +245,6 @@
 
         function renderChart(filteredTrades) {
             try {
-                // If Chart library is blocked/missing, exit safely so table still renders
                 if (typeof Chart === 'undefined') {
                     console.warn("Chart.js library is missing or blocked. Skipping chart render.");
                     return;
@@ -321,6 +318,86 @@
             }
         }
 
+        // Export Function (PDF)
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            
+            const btn = document.getElementById('btn-export');
+            const exportText = document.getElementById('export-text');
+            const exportIcon = document.getElementById('export-icon');
+            const tableContainer = document.getElementById('table-container');
+            
+            const pdfHeader = document.getElementById('pdf-header');
+            const webHeader = document.getElementById('web-header');
+            
+            // Visual loading state
+            const originalText = exportText.innerText;
+            exportText.innerText = "Generating PDF...";
+            exportIcon.classList.add('animate-pulse');
+
+            // Setup PDF Statement Data
+            document.getElementById('pdf-trader-name').innerText = selectedTrader;
+            
+            // Generate nice string for PDF Period based on chosen dates
+            let periodText = "All Time";
+            if (startDateInput.value || endDateInput.value) {
+                const s = startDateInput.value ? new Date(startDateInput.value).toLocaleDateString() : 'Start';
+                const e = endDateInput.value ? new Date(endDateInput.value).toLocaleDateString() : 'Present';
+                periodText = `${s} to ${e}`;
+            }
+            document.getElementById('pdf-date-range').innerText = `Period: ${periodText} | Export Date: ${new Date().toLocaleDateString()}`;
+            
+            // Swap to "Print Layout"
+            webHeader.classList.add('hidden');
+            pdfHeader.classList.remove('hidden');
+            
+            // Un-restrict table height so all rows render in the picture
+            const originalHeight = tableContainer.className;
+            tableContainer.className = "overflow-x-auto overflow-y-visible"; 
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            html2canvas(document.getElementById('capture-area'), {
+                backgroundColor: '#0f172a', // Slate-900 background
+                scale: 2, // High resolution
+                useCORS: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Set up PDF Document (A4 size, Portrait)
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                // Calculate height to keep image aspect ratio
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                // Add Image to PDF
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                
+                // Save Document
+                const safeDate = new Date().toLocaleDateString().replace(/\//g, '-');
+                pdf.save(`FBFX_Statement_${selectedTrader.replace(/\s+/g, '')}_${safeDate}.pdf`);
+                
+                // Revert to Web Layout
+                webHeader.classList.remove('hidden');
+                pdfHeader.classList.add('hidden');
+                tableContainer.className = originalHeight;
+                
+                // Reset Button
+                exportText.innerText = originalText;
+                exportIcon.classList.remove('animate-pulse');
+            }).catch(err => {
+                console.error("Error generating PDF:", err);
+                // Revert Layout on error
+                webHeader.classList.remove('hidden');
+                pdfHeader.classList.add('hidden');
+                tableContainer.className = originalHeight;
+                exportText.innerText = originalText;
+                exportIcon.classList.remove('animate-pulse');
+                alert("Failed to export PDF. Please try again.");
+            });
+        }
+
         // Update UI Function
         function renderUI() {
             // Button Styles
@@ -332,17 +409,22 @@
                 btnMrJ.className = 'flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30';
             }
 
+            // Prepare filter timestamps (start of day to end of day)
+            const filterStart = startDateInput.value ? new Date(startDateInput.value).setHours(0,0,0,0) : null;
+            const filterEnd = endDateInput.value ? new Date(endDateInput.value).setHours(23,59,59,999) : null;
+
             // Filter Data Safely
             const filteredTrades = trades.filter(t => {
                 const matchTrader = String(t.trader || '').toUpperCase() === selectedTrader.toUpperCase();
                 
-                const tradeMonth = getMonthNumFromDate(t.date);
-                const matchMonth = selectedMonth === 'All' || tradeMonth === parseInt(selectedMonth, 10);
-                
-                const tradeDay = getDayNumFromDate(t.date);
-                const matchDay = selectedDay === 'All' || tradeDay === parseInt(selectedDay, 10);
+                let matchDate = true;
+                const tradeStamp = parseTradeDateToTimestamp(t.date);
+                if (tradeStamp > 0) {
+                    if (filterStart && tradeStamp < filterStart) matchDate = false;
+                    if (filterEnd && tradeStamp > filterEnd) matchDate = false;
+                }
 
-                return matchTrader && matchMonth && matchDay;
+                return matchTrader && matchDate;
             });
             
             const tableTrades = [...filteredTrades].reverse();
@@ -362,7 +444,7 @@
             statPnl.textContent = `$${totalPnL.toFixed(2)}`;
             statPnl.className = `text-2xl font-bold ${totalPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
 
-            // Render Chart (with safety net)
+            // Render Chart
             renderChart(filteredTrades);
 
             // Populate Table
@@ -406,35 +488,19 @@
             }
         }
 
-        // Event Listeners
+        // Event Listeners for Tabs
         btnMrM.addEventListener('click', () => {
             selectedTrader = 'MR. M';
-            selectedMonth = 'All';
-            selectedDay = 'All';
-            populateMonthDropdown();
-            populateDayDropdown();
-            renderUI();
+            startDateInput.value = '';
+            endDateInput.value = '';
+            handleDateChange();
         });
 
         btnMrJ.addEventListener('click', () => {
             selectedTrader = 'MR. J';
-            selectedMonth = 'All';
-            selectedDay = 'All';
-            populateMonthDropdown();
-            populateDayDropdown();
-            renderUI();
-        });
-
-        monthFilter.addEventListener('change', (e) => {
-            selectedMonth = e.target.value;
-            selectedDay = 'All'; 
-            populateDayDropdown();
-            renderUI();
-        });
-
-        dayFilter.addEventListener('change', (e) => {
-            selectedDay = e.target.value;
-            renderUI();
+            startDateInput.value = '';
+            endDateInput.value = '';
+            handleDateChange();
         });
 
         // Initial Data Pull
