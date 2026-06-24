@@ -48,11 +48,6 @@
                 </div>
             </div>
 
-            <div class="flex flex-col text-right hidden sm:flex border-l border-slate-700 pl-4 ml-2">
-                <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Initial Inv.</span>
-                <span id="display-investment" class="text-lg font-bold text-white"></span>
-            </div>
-            
             <button id="btn-refresh" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 h-fit ml-2" onclick="loadData()">
                 <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                 <span id="refresh-text" class="hidden sm:inline">Refresh Data</span>
@@ -61,7 +56,7 @@
     </div>
 
     <div class="max-w-6xl mx-auto space-y-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
                 <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
@@ -69,15 +64,6 @@
                 </div>
                 <div id="stat-winrate" class="text-2xl font-bold text-white">0%</div>
                 <div id="stat-winloss" class="text-xs text-slate-500 mt-1">0 W / 0 L</div>
-            </div>
-
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <div class="text-slate-400 text-xs font-semibold uppercase mb-1 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
-                    ROI (Growth)
-                </div>
-                <div id="stat-roi" class="text-2xl font-bold">0%</div>
-                <div class="text-xs text-slate-500 mt-1">Based on initial inv.</div>
             </div>
 
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
@@ -138,11 +124,6 @@
         // =========================================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYkc9vRgLbe-cohQMXCu1reEF8t3iCRYYi67EtK-whW1Hwu5ZL7HOvlME880qK34Rh/exec'; 
 
-        const initialInvestments = {
-            'MR. M': 738.38,
-            'MR. J': 21.00
-        };
-
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         let trades = [];
@@ -156,10 +137,8 @@
         const btnMrJ = document.getElementById('btn-mr-j');
         const monthFilter = document.getElementById('month-filter');
         const dayFilter = document.getElementById('day-filter');
-        const displayInvestment = document.getElementById('display-investment');
         const statWinRate = document.getElementById('stat-winrate');
         const statWinLoss = document.getElementById('stat-winloss');
-        const statRoi = document.getElementById('stat-roi');
         const statPnl = document.getElementById('stat-pnl');
         const statTotal = document.getElementById('stat-total');
         const tableBody = document.getElementById('trade-table-body');
@@ -343,8 +322,6 @@
                 btnMrJ.className = 'flex-1 lg:flex-none py-2 px-6 rounded-lg font-medium transition-all bg-blue-600 text-white shadow-lg shadow-blue-500/30';
             }
 
-            displayInvestment.textContent = `$${initialInvestments[selectedTrader].toFixed(2)}`;
-
             // Filter Data
             const filteredTrades = trades.filter(t => {
                 const matchTrader = t.trader.toUpperCase() === selectedTrader.toUpperCase();
@@ -367,16 +344,10 @@
             const winRate = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : 0;
             const totalPnL = filteredTrades.reduce((acc, curr) => acc + parseFloat(curr.result), 0);
             
-            const investment = initialInvestments[selectedTrader] || 0;
-            const roi = investment > 0 ? ((totalPnL / investment) * 100).toFixed(2) : 0;
-
             // Update DOM Stats
             statWinRate.textContent = `${winRate}%`;
             statWinLoss.textContent = `${winningTrades} W / ${losingTrades} L`;
             statTotal.textContent = totalTrades;
-            
-            statRoi.textContent = `${roi >= 0 ? '+' : ''}${roi}%`;
-            statRoi.className = `text-2xl font-bold ${roi >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
             
             statPnl.textContent = `$${totalPnL.toFixed(2)}`;
             statPnl.className = `text-2xl font-bold ${totalPnL >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
